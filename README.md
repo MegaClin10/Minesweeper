@@ -1,2 +1,2 @@
 # Minesweeper
-Default Windows game Minesweeper
+Default Windows game Minesweeper (command line)
