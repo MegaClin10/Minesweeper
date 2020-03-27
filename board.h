@@ -12,6 +12,7 @@ private:
 public:
     Board();
     Board(int size);
+    bool findMines(int row, int col);
     void printGameBoard();
 };
 

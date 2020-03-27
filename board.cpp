@@ -68,6 +68,10 @@ vector<int> Board::assignMines() {
     return mines;
 }
 
+bool Board::findMines(int row, int col) {
+    return false;
+}
+
 void Board::printGameBoard() {
     for(int r = 0; r < 16; r++){
         for(int c = 0; c < size; c++){
