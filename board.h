@@ -5,7 +5,7 @@
 #include <vector>
 class Board {
 private:
-    int mineRem, size;
+    int mineRem, size, turn;
     std::vector<std::vector<Cell>> gameBoard; //dude idk how the fuck to make a 2d vector work god fucking damnit. the problem is that its not getting initialized so everything is fucked up.
     std::vector<int> assignMines();
 

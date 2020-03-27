@@ -9,12 +9,14 @@ using namespace std;
 Board::Board() {
     mineRem = 0;
     size = 0;
+    turn = 0;
     for(int r = 0; r < 16; r++)
         for(int c = 0; c < size; c++)
             cout << "temp" << endl; //should be same as param board
 }
 
 Board::Board(int size) {
+    turn = 0;
     if(size == 16)
         mineRem = 40;
     else if(size == 30)
@@ -69,10 +71,30 @@ vector<int> Board::assignMines() {
 }
 
 bool Board::findMines(int row, int col) {
+    row--;
+    col--;
+    cout << "mine in selected cell? " << gameBoard[row][col].mine;
+    if(turn == 0 && gameBoard[row][col].mine) {
+        gameBoard[row][col].mine = false;
+        for(int i = 0; i < size; i++) {
+            if(!gameBoard[0][i].mine) {
+                gameBoard[0][i].mine = true;
+                break;
+            }
+        }
+    }
+
+
+    //to test first click
+    if(turn == 1)
+        return true;
+    turn ++;
     return false;
 }
 
 void Board::printGameBoard() {
+    cout << "\n\n\n";
+    cout << "Mines left: " << mineRem << "  Turn: " << turn << "\n\n";
     for(int r = 0; r < 16; r++){
         for(int c = 0; c < size; c++){
             if(gameBoard[r][c].mine)

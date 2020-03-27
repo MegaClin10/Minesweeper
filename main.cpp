@@ -13,7 +13,7 @@ int main() {
     cout << "Type 'help' to learn how to play, or type 'play' to start playing: ";
     cin >> input;
     if(input == "help")
-        cout << "Type play bitch" << endl;
+        cout << "Type play" << endl;
     else if(input == "play"){
         cout << "Enter tile width amount (16 or 30): ";
         cin >> width;
@@ -24,7 +24,7 @@ int main() {
             cin >> x;
             cout << "Enter y coordinate to clear: ";
             cin >> y;
-            gameOver = firstBoard.findMines(x, y);
+            gameOver = firstBoard.findMines(y, x);
         }
     }
 
