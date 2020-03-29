@@ -34,6 +34,7 @@ Board::Board(int size) {
     int count = -1;
     vector<int> mines = assignMines();
     //Changes vector attributes to match assign mines
+    //needs to be put inside assignMines function eventually
     for(int r = 0; r < 16; r++) {
         for(int c = 0; c < size; c++) {
             count++;
@@ -50,53 +51,24 @@ Board::Board(int size) {
     //make a function for this in the future
     for(int r = 0; r < 16; r++) {
         for(int c = 0; c < size; c++) {
-
-
-            if(r == 0 && c == 0) {
-                for(int rsub = r; rsub <= r + 1; rsub++)
-                    for(int csub = c; csub <= c + 1; csub++)
-                        gameBoard[r][c].adjMines += (gameBoard[rsub][csub].mine)? 1 : 0;
-            }
-            else if(r == 0 && c == size - 1) {
-                for(int rsub = r; rsub <= r + 1; rsub++)
-                    for(int csub = c - 1; csub <= c; csub++)
-                        gameBoard[r][c].adjMines += (gameBoard[rsub][csub].mine)? 1 : 0;
-            }
-            else if(r == 16 - 1 && c == size - 1) {
-                for(int rsub = r - 1; rsub <= r; rsub++)
-                    for(int csub = c - 1; csub <= c; csub++)
-                        gameBoard[r][c].adjMines += (gameBoard[rsub][csub].mine)? 1 : 0;
-            }
-            else if(r == 16 - 1 && c == 0) {
-                for(int rsub = r - 1; rsub <= r; rsub++)
-                    for(int csub = c; csub <= c + 1; csub++)
-                        gameBoard[r][c].adjMines += (gameBoard[rsub][csub].mine)? 1 : 0;
-            }
-            else if(r == 0) {
-                for(int rsub = r; rsub <= r + 1; rsub++)
-                    for(int csub = c - 1; csub <= c + 1; csub++)
-                        gameBoard[r][c].adjMines += (gameBoard[rsub][csub].mine)? 1 : 0;
-            }       
-            else if(r == 16 - 1) {
-                for(int rsub = r - 1; rsub <= r; rsub++)
-                    for(int csub = c - 1; csub <= c + 1; csub++)
-                        gameBoard[r][c].adjMines += (gameBoard[rsub][csub].mine)? 1 : 0;
-            }     
-            else if(c == 0) {
-                for(int rsub = r - 1; rsub <= r + 1; rsub++)
-                    for(int csub = c; csub <= c + 1; csub++)
-                        gameBoard[r][c].adjMines += (gameBoard[rsub][csub].mine)? 1 : 0;
-            }   
-            else if(c == size - 1) {
-                for(int rsub = r - 1; rsub <= r + 1; rsub++)
-                    for(int csub = c - 1; csub <= c; csub++)
-                        gameBoard[r][c].adjMines += (gameBoard[rsub][csub].mine)? 1 : 0;
-            } 
-            else /*(r >= 1 && r < 16 - 1 && c >= 1 && c < size - 1)*/ {
-                for(int rsub = r - 1; rsub <= r + 1; rsub++)
-                    for(int csub = c - 1; csub <= c + 1; csub++)
-                        gameBoard[r][c].adjMines += (gameBoard[rsub][csub].mine)? 1 : 0;
-            }
+            if(r == 0 && c == 0)
+                adjacentMines(r, r, r + 1, c, c, c + 1);
+            else if(r == 0 && c == size - 1)
+                adjacentMines(r, r, r + 1, c, c - 1, c);
+            else if(r == 16 - 1 && c == size - 1)
+                adjacentMines(r, r - 1, r, c, c - 1, c);
+            else if(r == 16 - 1 && c == 0)
+                adjacentMines(r, r - 1, r, c, c, c + 1);
+            else if(r == 0)
+                adjacentMines(r, r, r + 1, c, c - 1, c + 1);       
+            else if(r == 16 - 1)
+                adjacentMines(r, r - 1, r, c, c - 1, c + 1);     
+            else if(c == 0)
+                adjacentMines(r, r - 1, r + 1, c, c, c + 1);   
+            else if(c == size - 1)
+                adjacentMines(r, r - 1, r + 1, c, c - 1, c); 
+            else
+                adjacentMines(r, r -1, r + 1, c, c - 1, c + 1);
         }
     }
 }
@@ -118,6 +90,12 @@ vector<int> Board::assignMines() {
     sort(mines.begin(), mines.end());
     reverse(mines.begin(), mines.end());
     return mines;
+}
+
+void Board::adjacentMines(int r, int rStart, int rEnd, int c, int cStart, int cEnd) {
+    for(int rsub = rStart; rsub <= rEnd; rsub++)
+        for(int csub = cStart; csub <= cEnd; csub++)
+            gameBoard[r][c].adjMines += (gameBoard[rsub][csub].mine)? 1 : 0;    
 }
 
 bool Board::findMines(int row, int col) {
