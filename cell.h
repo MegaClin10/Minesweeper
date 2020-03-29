@@ -4,6 +4,7 @@
 struct Cell {
     bool mine;
     bool flag;
+    bool clear;
     int idval;
     int adjMines;
 
@@ -12,14 +13,8 @@ struct Cell {
         flag = 0;
         idval = -1;
         adjMines = 0;
+        clear = 0;
     };
-
-    Cell(int idval) {
-        mine = 0;
-        flag = 0;
-        this->idval = idval;
-        adjMines = 0;
-    }
 };
 
 

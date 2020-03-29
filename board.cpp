@@ -101,26 +101,29 @@ void Board::findAllAdjacentMines() {
     }
 }
 
-bool Board::clearCells(int row, int col) {
-    row--;
-    col--;
-    if(turn == 0 && gameBoard[row][col].mine) {
-        gameBoard[row][col].mine = false;
+bool Board::clearCells(int r, int c) {
+    r--;
+    c--;
+    if(turn == 0 && gameBoard[r][c].mine) {
+        gameBoard[r][c].mine = false;
         for(int i = 0; i < size; i++) {
             if(!gameBoard[0][i].mine) {
                 gameBoard[0][i].mine = true;
                 findAllAdjacentMines();
-                break;
+                //call clearCells again to open up space (if any)
+                gameBoard[r][c].clear = true;
+                turn++;
+                return false;
             }
         }
     }
-
-
-    //to test first click
-    if(turn == 1)
+    else if(gameBoard[r][c].mine)
         return true;
-    turn ++;
-    return false;
+    else {
+        gameBoard[r][c].clear = true;
+        turn++;
+        return false;
+    }
 }
 
 void Board::printGameBoard() {
@@ -128,11 +131,10 @@ void Board::printGameBoard() {
     cout << "Mines left: " << mineRem << "  Turn: " << turn << "\n\n";
     for(int r = 0; r < 16; r++){
         for(int c = 0; c < size; c++){
-            if(gameBoard[r][c].mine)
-                cout << "x ";
-            else
+            if(gameBoard[r][c].clear)
                 cout << gameBoard[r][c].adjMines << " ";
-                // cout << "o ";
+            else 
+                cout << "o ";
         }
         cout << endl;
     }
