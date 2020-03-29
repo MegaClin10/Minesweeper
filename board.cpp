@@ -10,9 +10,6 @@ Board::Board() {
     mineRem = 0;
     size = 0;
     turn = 0;
-    for(int r = 0; r < 16; r++)
-        for(int c = 0; c < size; c++)
-            cout << "temp" << endl; //should be same as param board
 }
 
 Board::Board(int size) {
@@ -47,6 +44,19 @@ Board::Board(int size) {
                     gameBoard[r][c].mine = true;
                 }
             }
+        }
+    }
+    //for loop to find all mines adjacent to every cell (excluding edge cells)
+    for(int r = 1; r < 16 - 1; r++) {
+        for(int c = 1; c < size - 1; c++) {
+            int tempMineCount = 0;
+            for(int rsub = r - 1; rsub <= r + 1; rsub++) {
+                for(int csub = c - 1; csub <= c + 1; csub++) {
+                    if(gameBoard[rsub][csub].mine)
+                        tempMineCount++;
+                }
+            }
+            gameBoard[r][c].adjMines = tempMineCount;
         }
     }
 }
@@ -100,7 +110,8 @@ void Board::printGameBoard() {
             if(gameBoard[r][c].mine)
                 cout << "x ";
             else
-                cout << "o ";
+                cout << gameBoard[r][c].adjMines << " ";
+                // cout << "o ";
         }
         cout << endl;
     }
