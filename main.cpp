@@ -24,7 +24,7 @@ int main() {
             cin >> x;
             cout << "Enter y coordinate to clear: ";
             cin >> y;
-            gameOver = firstBoard.findMines(y, x);
+            gameOver = firstBoard.clearCells(y, x);
         }
     }
 

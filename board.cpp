@@ -31,10 +31,10 @@ Board::Board(int size) {
         gameBoard.push_back(gameBoardRows);
     }
     this->size = size;
+    //needs to be put inside assignMines function eventually
     int count = -1;
     vector<int> mines = assignMines();
     //Changes vector attributes to match assign mines
-    //needs to be put inside assignMines function eventually
     for(int r = 0; r < 16; r++) {
         for(int c = 0; c < size; c++) {
             count++;
@@ -47,30 +47,7 @@ Board::Board(int size) {
             }
         }
     }
-    //for loop to find all mines adjacent to every cell
-    //make a function for this in the future
-    for(int r = 0; r < 16; r++) {
-        for(int c = 0; c < size; c++) {
-            if(r == 0 && c == 0)
-                adjacentMines(r, r, r + 1, c, c, c + 1);
-            else if(r == 0 && c == size - 1)
-                adjacentMines(r, r, r + 1, c, c - 1, c);
-            else if(r == 16 - 1 && c == size - 1)
-                adjacentMines(r, r - 1, r, c, c - 1, c);
-            else if(r == 16 - 1 && c == 0)
-                adjacentMines(r, r - 1, r, c, c, c + 1);
-            else if(r == 0)
-                adjacentMines(r, r, r + 1, c, c - 1, c + 1);       
-            else if(r == 16 - 1)
-                adjacentMines(r, r - 1, r, c, c - 1, c + 1);     
-            else if(c == 0)
-                adjacentMines(r, r - 1, r + 1, c, c, c + 1);   
-            else if(c == size - 1)
-                adjacentMines(r, r - 1, r + 1, c, c - 1, c); 
-            else
-                adjacentMines(r, r -1, r + 1, c, c - 1, c + 1);
-        }
-    }
+    findAllAdjacentMines();
 }
 
 vector<int> Board::assignMines() {
@@ -98,7 +75,33 @@ void Board::adjacentMines(int r, int rStart, int rEnd, int c, int cStart, int cE
             gameBoard[r][c].adjMines += (gameBoard[rsub][csub].mine)? 1 : 0;    
 }
 
-bool Board::findMines(int row, int col) {
+void Board::findAllAdjacentMines() {
+    for(int r = 0; r < 16; r++) {
+        for(int c = 0; c < size; c++) {
+            gameBoard[r][c].adjMines = 0;
+            if(r == 0 && c == 0)
+                adjacentMines(r, r, r + 1, c, c, c + 1);
+            else if(r == 0 && c == size - 1)
+                adjacentMines(r, r, r + 1, c, c - 1, c);
+            else if(r == 16 - 1 && c == size - 1)
+                adjacentMines(r, r - 1, r, c, c - 1, c);
+            else if(r == 16 - 1 && c == 0)
+                adjacentMines(r, r - 1, r, c, c, c + 1);
+            else if(r == 0)
+                adjacentMines(r, r, r + 1, c, c - 1, c + 1);       
+            else if(r == 16 - 1)
+                adjacentMines(r, r - 1, r, c, c - 1, c + 1);     
+            else if(c == 0)
+                adjacentMines(r, r - 1, r + 1, c, c, c + 1);   
+            else if(c == size - 1)
+                adjacentMines(r, r - 1, r + 1, c, c - 1, c); 
+            else
+                adjacentMines(r, r -1, r + 1, c, c - 1, c + 1);
+        }
+    }
+}
+
+bool Board::clearCells(int row, int col) {
     row--;
     col--;
     if(turn == 0 && gameBoard[row][col].mine) {
@@ -106,7 +109,7 @@ bool Board::findMines(int row, int col) {
         for(int i = 0; i < size; i++) {
             if(!gameBoard[0][i].mine) {
                 gameBoard[0][i].mine = true;
-                //call the ajacentMines function to redo the check for all mines on board now that one has switched
+                findAllAdjacentMines();
                 break;
             }
         }
