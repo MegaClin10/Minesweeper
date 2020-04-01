@@ -101,6 +101,20 @@ void Board::findAllAdjacentMines() {
     }
 }
 
+void Board::clearAdjacentCells(int r, int c) {
+    //This is excluding edge and corner cases for now
+    if(gameBoard[r][c].adjMines == 0) {
+        for(int rSub = r - 1; rSub <= r + 1; rSub++) {
+            for(int cSub = c - 1; cSub <= c + 1; cSub++) {
+                gameBoard[rSub][cSub].clear = true;
+                // clearCells(rSub, cSub); //recursive call is giving seg fault
+            }
+        }
+    }
+    else 
+        return;
+}
+
 bool Board::clearCells(int r, int c) {
     r--;
     c--;
@@ -110,8 +124,8 @@ bool Board::clearCells(int r, int c) {
             if(!gameBoard[0][i].mine) {
                 gameBoard[0][i].mine = true;
                 findAllAdjacentMines();
-                //call clearCells again to open up space (if any)
                 gameBoard[r][c].clear = true;
+                clearAdjacentCells(r, c);
                 turn++;
                 return false;
             }
@@ -121,6 +135,7 @@ bool Board::clearCells(int r, int c) {
         return true;
     else {
         gameBoard[r][c].clear = true;
+        clearAdjacentCells(r, c);
         turn++;
         return false;
     }
@@ -133,6 +148,8 @@ void Board::printGameBoard() {
         for(int c = 0; c < size; c++){
             if(gameBoard[r][c].clear)
                 cout << gameBoard[r][c].adjMines << " ";
+            else if(gameBoard[r][c].mine)
+                cout << "x ";
             else 
                 cout << "o ";
         }
