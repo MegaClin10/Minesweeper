@@ -1,6 +1,7 @@
 #include "board.h"
 #include <iostream>
 #include <vector>
+#include <queue>
 #include <cstdlib>
 #include <algorithm>
 
@@ -59,7 +60,8 @@ vector<int> Board::assignMines() {
         numCells = 30*16;
     for(int i = 0; i < numCells; i++)
         minesrand.push_back(i);
-    srand(time(NULL));
+    // srand(time(NULL));
+    srand(9999);
     random_shuffle(minesrand.begin(), minesrand.end());
     vector<int> mines;
     for(int i = 0; i < mineRem; i++)
@@ -101,29 +103,27 @@ void Board::findAllAdjacentMines() {
     }
 }
 
-void Board::clearAdjacentCells(int r, int c, int rStart, int cStart) {
-    //This is excluding edge and corner cases for now
-    // cout << "   Top of 'clearAdjacentCells()'" << endl;
-    if(gameBoard[r][c].adjMines == 0) { //pretty sure this is whats causing the seg fault. Need to try and catch or something
-        // cout << "       inside gameBoard[r][c].adjMines if stmt with val: " << gameBoard[r][c].adjMines << endl;
-        if(r > 0 && c > 0 && r < 16 - 1 && c < size - 1) {
+void Board::clearAdjacentCells(int r, int c) {
+    queue<Cell*> minesToFind;
+    if(gameBoard[r][c].adjMines == 0) {
+        if(r > 0 && c > 0 && r < 16 - 1 && c < size - 1) { 
             for(int rSub = r - 1; rSub <= r + 1; rSub++) {
                 for(int cSub = c - 1; cSub <= c + 1; cSub++) {
-                    gameBoard[rSub][cSub].clear = true;
-                    cout << rSub << " " << cSub << " and " << rStart << " " << cStart << endl;
-                    if((rSub != r && cSub != c) && rSub != rStart && cSub != cStart/*rSub, cSub != the original call values*/) {
-                        // cout << "           Just before recursive call r and c, rSub and cSub: " << r << " " << c << ", " << rSub << " " << cSub << endl;
-                        int startr = r;
-                        int startc = c;
-                        clearAdjacentCells(rSub, cSub, startr, startc); //recursive call is giving seg fault
-                        // cout << "           Just after recursive call" << endl;
+                    gameBoard[r][c].vis = true;
+                    Cell* temp = new Cell;
+                    temp = &gameBoard[rSub][cSub];
+                    minesToFind.push(temp);
+                    if(!gameBoard[rSub][cSub].vis) {
+                        clearAdjacentCells(rSub, cSub);
                     }
                 }
             }
         }
     }
-    else 
-        return;
+    while(minesToFind.size() > 0) {
+        minesToFind.front()->clear = true; 
+        minesToFind.pop();
+    }
 }
 
 bool Board::clearCells(int r, int c) {
@@ -139,7 +139,7 @@ bool Board::clearCells(int r, int c) {
             }
         }
         gameBoard[r][c].clear = true;
-        clearAdjacentCells(r, c, r, c);
+        clearAdjacentCells(r, c);
         turn++;
         return false;
     }
@@ -147,7 +147,7 @@ bool Board::clearCells(int r, int c) {
         return true;
     else {
         gameBoard[r][c].clear = true;
-        clearAdjacentCells(r, c, r, c);
+        clearAdjacentCells(r, c);
         turn++;
         return false;
     }

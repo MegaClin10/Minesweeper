@@ -6,11 +6,11 @@
 class Board {
 private:
     int mineRem, size, turn;
-    std::vector<std::vector<Cell>> gameBoard; //dude idk how the fuck to make a 2d vector work god fucking damnit. the problem is that its not getting initialized so everything is fucked up.
+    std::vector<std::vector<Cell>> gameBoard;
     std::vector<int> assignMines();
     void adjacentMines(int r, int rStart, int rEnd, int c, int cStart, int cEnd);
     void findAllAdjacentMines();
-    void clearAdjacentCells(int row, int col, int rStart, int cStarts);
+    void clearAdjacentCells(int row, int col);
 
 public:
     Board();
