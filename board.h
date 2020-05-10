@@ -10,7 +10,7 @@ private:
     std::vector<int> assignMines();
     void adjacentMines(int r, int rStart, int rEnd, int c, int cStart, int cEnd);
     void findAllAdjacentMines();
-    void clearAdjacentCells(int row, int col);
+    void clearAdjacentCells(int row, int col, int rStart, int cStarts);
 
 public:
     Board();

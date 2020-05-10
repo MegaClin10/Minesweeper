@@ -101,13 +101,24 @@ void Board::findAllAdjacentMines() {
     }
 }
 
-void Board::clearAdjacentCells(int r, int c) {
+void Board::clearAdjacentCells(int r, int c, int rStart, int cStart) {
     //This is excluding edge and corner cases for now
-    if(gameBoard[r][c].adjMines == 0) {
-        for(int rSub = r - 1; rSub <= r + 1; rSub++) {
-            for(int cSub = c - 1; cSub <= c + 1; cSub++) {
-                gameBoard[rSub][cSub].clear = true;
-                // clearCells(rSub, cSub); //recursive call is giving seg fault
+    // cout << "   Top of 'clearAdjacentCells()'" << endl;
+    if(gameBoard[r][c].adjMines == 0) { //pretty sure this is whats causing the seg fault. Need to try and catch or something
+        // cout << "       inside gameBoard[r][c].adjMines if stmt with val: " << gameBoard[r][c].adjMines << endl;
+        if(r > 0 && c > 0 && r < 16 - 1 && c < size - 1) {
+            for(int rSub = r - 1; rSub <= r + 1; rSub++) {
+                for(int cSub = c - 1; cSub <= c + 1; cSub++) {
+                    gameBoard[rSub][cSub].clear = true;
+                    cout << rSub << " " << cSub << " and " << rStart << " " << cStart << endl;
+                    if((rSub != r && cSub != c) && rSub != rStart && cSub != cStart/*rSub, cSub != the original call values*/) {
+                        // cout << "           Just before recursive call r and c, rSub and cSub: " << r << " " << c << ", " << rSub << " " << cSub << endl;
+                        int startr = r;
+                        int startc = c;
+                        clearAdjacentCells(rSub, cSub, startr, startc); //recursive call is giving seg fault
+                        // cout << "           Just after recursive call" << endl;
+                    }
+                }
             }
         }
     }
@@ -124,18 +135,19 @@ bool Board::clearCells(int r, int c) {
             if(!gameBoard[0][i].mine) {
                 gameBoard[0][i].mine = true;
                 findAllAdjacentMines();
-                gameBoard[r][c].clear = true;
-                clearAdjacentCells(r, c);
-                turn++;
-                return false;
+                break;
             }
         }
+        gameBoard[r][c].clear = true;
+        clearAdjacentCells(r, c, r, c);
+        turn++;
+        return false;
     }
     else if(gameBoard[r][c].mine)
         return true;
     else {
         gameBoard[r][c].clear = true;
-        clearAdjacentCells(r, c);
+        clearAdjacentCells(r, c, r, c);
         turn++;
         return false;
     }
@@ -146,8 +158,12 @@ void Board::printGameBoard() {
     cout << "Mines left: " << mineRem << "  Turn: " << turn << "\n\n";
     for(int r = 0; r < 16; r++){
         for(int c = 0; c < size; c++){
-            if(gameBoard[r][c].clear)
-                cout << gameBoard[r][c].adjMines << " ";
+            if(gameBoard[r][c].clear) {
+                if(gameBoard[r][c].adjMines == 0)
+                    cout << "  ";
+                else
+                    cout << gameBoard[r][c].adjMines << " ";
+            }
             else if(gameBoard[r][c].mine)
                 cout << "x ";
             else 
