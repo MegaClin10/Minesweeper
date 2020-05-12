@@ -98,7 +98,7 @@ void Board::findAllAdjacentMines() {
             else if(c == size - 1)
                 adjacentMines(r, r - 1, r + 1, c, c - 1, c); 
             else
-                adjacentMines(r, r -1, r + 1, c, c - 1, c + 1);
+                adjacentMines(r, r - 1, r + 1, c, c - 1, c + 1);
         }
     }
 }
@@ -106,23 +106,40 @@ void Board::findAllAdjacentMines() {
 void Board::clearAdjacentCells(int r, int c) {
     queue<Cell*> minesToFind;
     if(gameBoard[r][c].adjMines == 0) {
-        if(r > 0 && c > 0 && r < 16 - 1 && c < size - 1) { 
-            for(int rSub = r - 1; rSub <= r + 1; rSub++) {
-                for(int cSub = c - 1; cSub <= c + 1; cSub++) {
-                    gameBoard[r][c].vis = true;
-                    Cell* temp = new Cell;
-                    temp = &gameBoard[rSub][cSub];
-                    minesToFind.push(temp);
-                    if(!gameBoard[rSub][cSub].vis) {
-                        clearAdjacentCells(rSub, cSub);
-                    }
-                }
-            }
-        }
+            if(r == 0 && c == 0)
+                clearHelper(r, r, r + 1, c, c, c + 1, minesToFind);
+            else if(r == 0 && c == size - 1)
+                clearHelper(r, r, r + 1, c, c - 1, c, minesToFind);
+            else if(r == 16 - 1 && c == size - 1)
+                clearHelper(r, r - 1, r, c, c - 1, c, minesToFind);
+            else if(r == 16 - 1 && c == 0)
+                clearHelper(r, r - 1, r, c, c, c + 1, minesToFind);
+            else if(r == 0)
+                clearHelper(r, r, r + 1, c, c - 1, c + 1, minesToFind);       
+            else if(r == 16 - 1)
+                clearHelper(r, r - 1, r, c, c - 1, c + 1, minesToFind);     
+            else if(c == 0)
+                clearHelper(r, r - 1, r + 1, c, c, c + 1, minesToFind);   
+            else if(c == size - 1)
+                clearHelper(r, r - 1, r + 1, c, c - 1, c, minesToFind); 
+            else
+                clearHelper(r, r - 1, r + 1, c, c - 1, c + 1, minesToFind);  
     }
     while(minesToFind.size() > 0) {
         minesToFind.front()->clear = true; 
         minesToFind.pop();
+    }
+}
+
+void Board::clearHelper(int r, int rStart, int rEnd, int c, int cStart, int cEnd, queue<Cell*>& minesToFind) {
+    for(int rSub = rStart; rSub <= rEnd; rSub++) {
+        for(int cSub = cStart; cSub <= cEnd; cSub++) {
+            gameBoard[r][c].vis = true;
+            minesToFind.push(&gameBoard[rSub][cSub]);
+            if(!gameBoard[rSub][cSub].vis) {
+                clearAdjacentCells(rSub, cSub);
+            }
+        }
     }
 }
 
