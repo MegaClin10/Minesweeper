@@ -178,8 +178,36 @@ void Board::printGameBoard() {
             if(gameBoard[r][c].clear) {
                 if(gameBoard[r][c].adjMines == 0)
                     cout << "  ";
-                else
-                    cout << gameBoard[r][c].adjMines << " ";
+                else {
+                    switch (gameBoard[r][c].adjMines)
+                    {
+                    case 1:
+                        cout << "\033[1;34m";
+                        break;
+                    case 2:
+                        cout << "\033[1;32m";
+                        break;
+                    case 3:
+                        cout << "\033[1;31m";
+                        break;
+                    case 4:
+                        cout << "\033[1;35m";
+                        break;
+                    case 5:
+                        cout << "\033[1;91m";
+                        break;
+                    case 6:
+                        cout << "\033[1;36m";
+                        break;
+                    case 7:
+                        cout << "\033[1;37m";
+                        break;
+                    case 8:
+                        cout << "\033[1;90m";
+                        break;
+                    }
+                    cout << gameBoard[r][c].adjMines << "\033[0m ";
+                }
             }
             else if(gameBoard[r][c].mine)
                 cout << "x ";
