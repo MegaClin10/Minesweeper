@@ -147,10 +147,11 @@ bool Board::clearCells(int r, int c) {
     r--;
     c--;
     if(turn == 0 && gameBoard[r][c].mine) {
-        gameBoard[r][c].mine = false;
+        
         for(int i = 0; i < size; i++) {
             if(!gameBoard[0][i].mine) {
                 gameBoard[0][i].mine = true;
+                gameBoard[r][c].mine = false;
                 findAllAdjacentMines();
                 break;
             }
