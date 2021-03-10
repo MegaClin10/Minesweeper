@@ -60,8 +60,8 @@ vector<int> Board::assignMines() {
         numCells = 30*16;
     for(int i = 0; i < numCells; i++)
         minesrand.push_back(i);
-    // srand(time(NULL));
-    srand(9999);
+    srand(time(NULL));
+    // srand(9999);
     random_shuffle(minesrand.begin(), minesrand.end());
     vector<int> mines;
     for(int i = 0; i < mineRem; i++)
@@ -174,7 +174,13 @@ bool Board::clearCells(int r, int c) {
 void Board::printGameBoard() {
     cout << "\n\n\n";
     cout << "Mines left: " << mineRem << "  Turn: " << turn << "\n\n";
+    cout << "  ";
+    for(int c = 0; c < size; c++) {
+        cout << (c + 1) % 10 << " ";
+    }
+    cout << "\n";
     for(int r = 0; r < 16; r++){
+        cout << (r + 1) % 10 << " ";
         for(int c = 0; c < size; c++){
             if(gameBoard[r][c].clear) {
                 if(gameBoard[r][c].adjMines == 0)
